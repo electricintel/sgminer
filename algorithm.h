@@ -22,7 +22,8 @@ typedef enum {
   ALGO_QUARK,
   ALGO_TWE,
   ALGO_FUGUE,
-  ALGO_NIST
+  ALGO_NIST,
+  ALGO_WHIRL
 } algorithm_type_t;
 
 extern const char *algorithm_type_str[]; 
