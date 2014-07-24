@@ -644,7 +644,7 @@ static algorithm_settings_t algos[] = {
 
   { "talkcoin-mod", ALGO_NIST, 1, 1, 1, 0, 0, 0xFF, 0xFFFFULL, 0x0000ffffUL, 4,  8 * 16 * 4194304, 0, talkcoin_regenhash, queue_talkcoin_mod_kernel, gen_hash, NULL},
 
-  { "fresh", ALGO_FRESH, 1, 256, 256, 0, 0, 0xFF, 0xFFFFULL, 0x0000ffffUL, 4, 4 * 16 * 4194304, 0, fresh_regenhash, queue_fresh_kernel, gen_hash, NULL},
+  { "freshcoin", ALGO_FRESH, 1, 256, 256, 0, 0, 0xFF, 0xFFFFULL, 0x0000ffffUL, 4, 8 * 16 * 4194304, 0, fresh_regenhash, queue_fresh_kernel, gen_hash, NULL},
 
   // kernels starting from this will have difficulty calculated by using fuguecoin algorithm
 #define A_FUGUE(a, b) \
@@ -722,7 +722,8 @@ static const char *lookup_algorithm_alias(const char *lookup_alias, uint8_t *nfa
   ALGO_ALIAS("x15old", "bitblockold");
   ALGO_ALIAS("nist5", "talkcoin-mod");
   ALGO_ALIAS("keccak", "maxcoin");
-  ALGO_ALIAS("whirlpool", "whirlcoin");  
+  ALGO_ALIAS("whirlpool", "whirlcoin"); 
+  ALGO_ALIAS("fresh", "freshcoin");  
 
   #undef ALGO_ALIAS
   #undef ALGO_ALIAS_NF
