@@ -48,7 +48,7 @@ const char *algorithm_type_str[] = {
   "Twecoin",
   "Fugue256",
   "NIST",
-  "WHIRL"
+  "Whirlcoin"
 };
 
 void sha256(const unsigned char *message, unsigned int len, unsigned char *digest)
@@ -158,10 +158,9 @@ static cl_int queue_sph_kernel(struct __clState *clState, struct _dev_blk_ctx *b
   return status;
 }
 
-static cl_int queue_whirl_kernel(struct __clState *clState, struct _dev_blk_ctx *blk, __maybe_unused cl_uint threads)
+static cl_int queue_whirlcoin_kernel(struct __clState *clState, struct _dev_blk_ctx *blk, __maybe_unused cl_uint threads)
 {
   cl_kernel *kernel;
-  unsigned int num = 0;
   cl_ulong le_target;
   cl_int status = 0;
 
@@ -170,13 +169,17 @@ static cl_int queue_whirl_kernel(struct __clState *clState, struct _dev_blk_ctx 
   status = clEnqueueWriteBuffer(clState->commandQueue, clState->CLbuffer0, true, 0, 80, clState->cldata, 0, NULL,NULL);
 
   //clbuffer, hashes
-  kernel = &clState->kernel_whirlpool;
+  kernel = &clState->kernel;
   CL_SET_ARG_N(0,clState->CLbuffer0);
-  CL_SET_ARG_N(1,clState->hash_buffer);
+  CL_SET_ARG_N(1,clState->padbuffer8);
+
+  kernel = clState->extra_kernels;
+  CL_SET_ARG_N(0,clState->padbuffer8);
+
+  CL_NEXTKERNEL_SET_ARG_N(0,clState->padbuffer8);
 
   //hashes, output, target
-  kernel = &clState->kernel_whirlpool2;
-  CL_SET_ARG_N(0,clState->hash_buffer);
+  CL_NEXTKERNEL_SET_ARG_N(0,clState->padbuffer8);
   CL_SET_ARG_N(1,clState->outputBuffer);
   CL_SET_ARG_N(2,le_target);
  
@@ -606,14 +609,13 @@ static algorithm_settings_t algos[] = {
   { "bitblockold", ALGO_X15, 1, 1, 1, 0, 0, 0xFF, 0xFFFFULL, 0x0000ffffUL, 10, 4 * 16 * 4194304, 0, bitblock_regenhash, queue_bitblockold_kernel, gen_hash, append_hamsi_compiler_options},
 
   { "talkcoin-mod", ALGO_NIST, 1, 1, 1, 0, 0, 0xFF, 0xFFFFULL, 0x0000ffffUL, 4,  8 * 16 * 4194304, 0, talkcoin_regenhash, queue_talkcoin_mod_kernel, gen_hash, NULL},
-  { "whirlcoin", ALGO_WHIRL, 1, 1, 1, 0, 0, 0xFF, 0xFFFFULL, 0x0000ffffUL, 1, 0, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, whirlcoin_regenhash, queue_whirlcoin_kernel, gen_hash, NULL}
   // kernels starting from this will have difficulty calculated by using fuguecoin algorithm
 #define A_FUGUE(a, b) \
     { a, ALGO_FUGUE, 1, 256, 256, 0, 0, 0xFF, 0xFFFFULL, 0x0000ffffUL, 0, 0, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, b, queue_sph_kernel, sha256, NULL}
   A_FUGUE( "fuguecoin",   fuguecoin_regenhash),
   A_FUGUE( "groestlcoin", groestlcoin_regenhash),
 #undef A_FUGUE
-
+  { "whirlcoin", ALGO_WHIRL, 1, 1, 1, 0, 0, 0xFF, 0xFFFFULL, 0x0000ffffUL, 3, 8 * 16 * 4194304, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, whirlcoin_regenhash, queue_whirlcoin_kernel, sha256, NULL},
   // Terminator (do not remove)
   { NULL, ALGO_UNK, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, NULL}
 };

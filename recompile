@@ -1,0 +1,8 @@
+#!/bin/sh
+make clean
+rm ./*.bin
+autoreconf -i
+cp /opt/ADLSDK/* ./ADL_SDK
+CFLAGS="-O2 -march=x86-64" ./configure
+CFLAGS="-O2 -march=x86-64" make
+ 

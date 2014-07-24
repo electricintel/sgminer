@@ -38,18 +38,21 @@
 
 /* Move init out of loop, so init once externally, and then use one single memcpy with that bigger memory block */
 typedef struct {
-    
-    sph_whirlpool1_context    whirlpool1,whirlpool2;
-	
+    sph_whirlpool1_context whirlpool1;
+    sph_whirlpool1_context whirlpool2;
+    sph_whirlpool1_context whirlpool3;
+    sph_whirlpool1_context whirlpool4;
 } Whash_context_holder;
 
 Whash_context_holder base_contexts;
 
 
-void init_Whash_contexts()
+void init_whirlcoin_hash_contexts()
 {
 	sph_whirlpool1_init(&base_contexts.whirlpool1);
 	sph_whirlpool1_init(&base_contexts.whirlpool2);
+	sph_whirlpool1_init(&base_contexts.whirlpool3);
+	sph_whirlpool1_init(&base_contexts.whirlpool4);
 }
 
 /*
@@ -66,41 +69,43 @@ be32enc_vect(uint32_t *dst, const uint32_t *src, uint32_t len)
 }
 
 
-inline void Whash(void *state, const void *input)
+inline void whirlcoin_hash(void *state, const void *input)
 {
-    init_Whash_contexts();
+    init_whirlcoin_hash_contexts();
     
     Whash_context_holder ctx;
-    
     uint32_t hashA[16], hashB[16];  
     
     memcpy(&ctx, &base_contexts, sizeof(base_contexts));
-	
+
     sph_whirlpool1 (&ctx.whirlpool1, input, 80);
     sph_whirlpool1_close (&ctx.whirlpool1, hashA);      
     
+	sph_whirlpool1(&ctx.whirlpool2, hashA, 64);
+    sph_whirlpool1_close(&ctx.whirlpool2, hashB);
+
+    sph_whirlpool1(&ctx.whirlpool3, hashB, 64);
+    sph_whirlpool1_close(&ctx.whirlpool3, hashA);
 	
 	sph_whirlpool1(&ctx.whirlpool4, hashA, 64);
     sph_whirlpool1_close(&ctx.whirlpool4, hashB);
 	
     memcpy(state, hashB, 32);
-
 }
 
 static const uint32_t diff1targ = 0x0000ffff;
 
 
 /* Used externally as confirmation of correct OCL code */
-int W_test(unsigned char *pdata, const unsigned char *ptarget, uint32_t nonce)
+int whirlcoin_test(unsigned char *pdata, const unsigned char *ptarget, uint32_t nonce)
 {
 	uint32_t tmp_hash7, Htarg = le32toh(((const uint32_t *)ptarget)[7]);
 	uint32_t data[20], ohash[8];
-	//char *scratchbuf;
 
 	be32enc_vect(data, (const uint32_t *)pdata, 19);
 	data[19] = htobe32(nonce);
-	//scratchbuf = alloca(SCRATCHBUF_SIZE);
-	Whash(ohash, data);
+
+	whirlcoin_hash(ohash, data);
 	tmp_hash7 = be32toh(ohash[7]);
 
 	applog(LOG_DEBUG, "htarget %08lx diff1 %08lx hash %08lx",
@@ -114,25 +119,23 @@ int W_test(unsigned char *pdata, const unsigned char *ptarget, uint32_t nonce)
 	return 1;
 }
 
-void W_regenhash(struct work *work)
+void whirlcoin_regenhash(struct work *work)
 {
-        uint32_t data[20];
-        char *scratchbuf;
-        uint32_t *nonce = (uint32_t *)(work->data + 76);
-        uint32_t *ohash = (uint32_t *)(work->hash);
+    uint32_t data[20];
+    uint32_t *nonce = (uint32_t *)(work->data + 76);
+    uint32_t *ohash = (uint32_t *)(work->hash);
 
-        be32enc_vect(data, (const uint32_t *)work->data, 19);
-        data[19] = htobe32(*nonce);
-        Whash(ohash, data);
+    be32enc_vect(data, (const uint32_t *)work->data, 19);
+    data[19] = htobe32(*nonce);
+    whirlcoin_hash(ohash, data);
 }
 
-bool scanhash_W(struct thr_info *thr, const unsigned char __maybe_unused *pmidstate,
+bool scanhash_whirlcoin(struct thr_info *thr, const unsigned char __maybe_unused *pmidstate,
 		     unsigned char *pdata, unsigned char __maybe_unused *phash1,
 		     unsigned char __maybe_unused *phash, const unsigned char *ptarget,
 		     uint32_t max_nonce, uint32_t *last_nonce, uint32_t n)
 {
 	uint32_t *nonce = (uint32_t *)(pdata + 76);
-	char *scratchbuf;
 	uint32_t data[20];
 	uint32_t tmp_hash7;
 	uint32_t Htarg = le32toh(((const uint32_t *)ptarget)[7]);
@@ -145,7 +148,7 @@ bool scanhash_W(struct thr_info *thr, const unsigned char __maybe_unused *pmidst
 
 		*nonce = ++n;
 		data[19] = (n);
-		Whash(ostate, data);
+		whirlcoin_hash(ostate, data);
 		tmp_hash7 = (ostate[7]);
 
 		applog(LOG_INFO, "data7 %08lx",

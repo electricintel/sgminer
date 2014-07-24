@@ -5,6 +5,7 @@
  *
  * Copyright (c) 2014  phm
  * Copyright (c) 2014 djm34
+  * Copyright (c) 2014 uray
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -27,7 +28,7 @@
  *
  * ===========================(LICENSE END)=============================
  *
- * @author   djm34
+ * @author   djm34, uray
  */
 #ifndef W_CL
 #define W_CL
@@ -43,7 +44,7 @@
 typedef unsigned int sph_u32;
 typedef int sph_s32;
 #ifndef __OPENCL_VERSION__
-typedef unsigned long long sph_u64;
+typedef unsigned long long sph_u64 __attribute__ ((aligned (128)));
 typedef long long sph_s64;
 #else
 typedef unsigned long sph_u64;
@@ -56,7 +57,7 @@ typedef long sph_s64;
 #define SPH_C32(x)    ((sph_u32)(x ## U))
 #define SPH_C64(x)    ((sph_u64)(x ## UL))
 
-__constant static const sph_u64 old1_T0[256] = {
+__constant static const sph_u64 old1_T0[256] __attribute__ ((aligned (128))) = {
     SPH_C64(0x78D8C07818281818), SPH_C64(0xAF2605AF23652323),
     SPH_C64(0xF9B87EF9C657C6C6), SPH_C64(0x6FFB136FE825E8E8),
     SPH_C64(0xA1CB4CA187948787), SPH_C64(0x6211A962B8D5B8B8),
@@ -187,7 +188,7 @@ __constant static const sph_u64 old1_T0[256] = {
     SPH_C64(0x3F6B933FF815F8F8), SPH_C64(0xA4C244A486978686)
 };
 
-__constant static const sph_u64 old1_T1[256] = {
+__constant static const sph_u64 old1_T1[256] __attribute__ ((aligned (128))) = {
     SPH_C64(0xD8C0781828181878), SPH_C64(0x2605AF23652323AF),
     SPH_C64(0xB87EF9C657C6C6F9), SPH_C64(0xFB136FE825E8E86F),
     SPH_C64(0xCB4CA187948787A1), SPH_C64(0x11A962B8D5B8B862),
@@ -318,7 +319,7 @@ __constant static const sph_u64 old1_T1[256] = {
     SPH_C64(0x6B933FF815F8F83F), SPH_C64(0xC244A486978686A4)
 };
 
-__constant static const sph_u64 old1_T2[256] = {
+__constant static const sph_u64 old1_T2[256] __attribute__ ((aligned (128))) = {
     SPH_C64(0xC0781828181878D8), SPH_C64(0x05AF23652323AF26),
     SPH_C64(0x7EF9C657C6C6F9B8), SPH_C64(0x136FE825E8E86FFB),
     SPH_C64(0x4CA187948787A1CB), SPH_C64(0xA962B8D5B8B86211),
@@ -449,7 +450,7 @@ __constant static const sph_u64 old1_T2[256] = {
     SPH_C64(0x933FF815F8F83F6B), SPH_C64(0x44A486978686A4C2)
 };
 
-__constant static const sph_u64 old1_T3[256] = {
+__constant static const sph_u64 old1_T3[256] __attribute__ ((aligned (128))) = {
     SPH_C64(0x781828181878D8C0), SPH_C64(0xAF23652323AF2605),
     SPH_C64(0xF9C657C6C6F9B87E), SPH_C64(0x6FE825E8E86FFB13),
     SPH_C64(0xA187948787A1CB4C), SPH_C64(0x62B8D5B8B86211A9),
@@ -580,7 +581,7 @@ __constant static const sph_u64 old1_T3[256] = {
     SPH_C64(0x3FF815F8F83F6B93), SPH_C64(0xA486978686A4C244)
 };
 
-__constant static const sph_u64 old1_T4[256] = {
+__constant static const sph_u64 old1_T4[256] __attribute__ ((aligned (128))) = {
     SPH_C64(0x1828181878D8C078), SPH_C64(0x23652323AF2605AF),
     SPH_C64(0xC657C6C6F9B87EF9), SPH_C64(0xE825E8E86FFB136F),
     SPH_C64(0x87948787A1CB4CA1), SPH_C64(0xB8D5B8B86211A962),
@@ -711,7 +712,7 @@ __constant static const sph_u64 old1_T4[256] = {
     SPH_C64(0xF815F8F83F6B933F), SPH_C64(0x86978686A4C244A4)
 };
 
-__constant static const sph_u64 old1_T5[256] = {
+__constant static const sph_u64 old1_T5[256] __attribute__ ((aligned (128))) = {
     SPH_C64(0x28181878D8C07818), SPH_C64(0x652323AF2605AF23),
     SPH_C64(0x57C6C6F9B87EF9C6), SPH_C64(0x25E8E86FFB136FE8),
     SPH_C64(0x948787A1CB4CA187), SPH_C64(0xD5B8B86211A962B8),
@@ -842,7 +843,7 @@ __constant static const sph_u64 old1_T5[256] = {
     SPH_C64(0x15F8F83F6B933FF8), SPH_C64(0x978686A4C244A486)
 };
 
-__constant static const sph_u64 old1_T6[256] = {
+__constant static const sph_u64 old1_T6[256] __attribute__ ((aligned (128))) = {
     SPH_C64(0x181878D8C0781828), SPH_C64(0x2323AF2605AF2365),
     SPH_C64(0xC6C6F9B87EF9C657), SPH_C64(0xE8E86FFB136FE825),
     SPH_C64(0x8787A1CB4CA18794), SPH_C64(0xB8B86211A962B8D5),
@@ -973,7 +974,7 @@ __constant static const sph_u64 old1_T6[256] = {
     SPH_C64(0xF8F83F6B933FF815), SPH_C64(0x8686A4C244A48697)
 };
 
-__constant static const sph_u64 old1_T7[256] = {
+__constant static const sph_u64 old1_T7[256] __attribute__ ((aligned (128))) = {
     SPH_C64(0x1878D8C078182818), SPH_C64(0x23AF2605AF236523),
     SPH_C64(0xC6F9B87EF9C657C6), SPH_C64(0xE86FFB136FE825E8),
     SPH_C64(0x87A1CB4CA1879487), SPH_C64(0xB86211A962B8D5B8),
@@ -1104,7 +1105,7 @@ __constant static const sph_u64 old1_T7[256] = {
     SPH_C64(0xF83F6B933FF815F8), SPH_C64(0x86A4C244A4869786)
 };
 
-__constant static const sph_u64 rc[10] = {
+__constant static const sph_u64 rc[10] __attribute__ ((aligned (128))) = {
     SPH_C64(0x4F01B887E8C62318),
     SPH_C64(0x52916F79F5D2A636),
     SPH_C64(0x357B0CA38E9BBC60),
@@ -1132,16 +1133,6 @@ __constant static const sph_u64 rc[10] = {
     ^ old1_T5[BYTE(in[i5], 5)] \
     ^ old1_T6[BYTE(in[i6], 6)] \
     ^ old1_T7[BYTE(in[i7], 7)])
-
-#define TRANSFER(dst, src) \
-        dst[0] = src[0]; \
-        dst[1] = src[1]; \
-        dst[2] = src[2]; \
-        dst[3] = src[3]; \
-        dst[4] = src[4]; \
-        dst[5] = src[5]; \
-        dst[6] = src[6]; \
-        dst[7] = src[7]; 
 
 #define SPH_T32(x) (as_uint(x))
 #define SPH_ROTL32(x, n) rotate(as_uint(x), as_uint(n))
@@ -1172,31 +1163,48 @@ typedef union {
 } hash_t;
 
 void whirlpool_round(sph_u64* n, sph_u64* h){
-    sph_u64 tmp[8];
+    sph_u64 t0, t1, t2, t3, t4, t5, t6, t7;
     for (unsigned r = 0; r < 10; r ++) {
-        tmp[0] = (ROUND_ELT(h, 0, 7, 6, 5, 4, 3, 2, 1) ^ rc[r]); 
-        tmp[1] = (ROUND_ELT(h, 1, 0, 7, 6, 5, 4, 3, 2) ^ 0 ); 
-        tmp[2] = (ROUND_ELT(h, 2, 1, 0, 7, 6, 5, 4, 3) ^ 0 ); 
-        tmp[3] = (ROUND_ELT(h, 3, 2, 1, 0, 7, 6, 5, 4) ^ 0 ); 
-        tmp[4] = (ROUND_ELT(h, 4, 3, 2, 1, 0, 7, 6, 5) ^ 0 );  
-        tmp[5] = (ROUND_ELT(h, 5, 4, 3, 2, 1, 0, 7, 6) ^ 0 );  
-        tmp[6] = (ROUND_ELT(h, 6, 5, 4, 3, 2, 1, 0, 7) ^ 0 );  
-        tmp[7] = (ROUND_ELT(h, 7, 6, 5, 4, 3, 2, 1, 0) ^ 0 );  
-        TRANSFER(h,tmp); 
-        tmp[0] = ROUND_ELT(n, 0, 7, 6, 5, 4, 3, 2, 1) ^ h[0]; 
-        tmp[1] = ROUND_ELT(n, 1, 0, 7, 6, 5, 4, 3, 2) ^ h[1]; 
-        tmp[2] = ROUND_ELT(n, 2, 1, 0, 7, 6, 5, 4, 3) ^ h[2]; 
-        tmp[3] = ROUND_ELT(n, 3, 2, 1, 0, 7, 6, 5, 4) ^ h[3]; 
-        tmp[4] = ROUND_ELT(n, 4, 3, 2, 1, 0, 7, 6, 5) ^ h[4]; 
-        tmp[5] = ROUND_ELT(n, 5, 4, 3, 2, 1, 0, 7, 6) ^ h[5]; 
-        tmp[6] = ROUND_ELT(n, 6, 5, 4, 3, 2, 1, 0, 7) ^ h[6]; 
-        tmp[7] = ROUND_ELT(n, 7, 6, 5, 4, 3, 2, 1, 0) ^ h[7]; 
-        TRANSFER(n,tmp); 
+        t0 = (ROUND_ELT(h, 0, 7, 6, 5, 4, 3, 2, 1) ^ rc[r]); 
+        t1 = (ROUND_ELT(h, 1, 0, 7, 6, 5, 4, 3, 2) ^ 0 ); 
+        t2 = (ROUND_ELT(h, 2, 1, 0, 7, 6, 5, 4, 3) ^ 0 ); 
+        t3 = (ROUND_ELT(h, 3, 2, 1, 0, 7, 6, 5, 4) ^ 0 ); 
+        t4 = (ROUND_ELT(h, 4, 3, 2, 1, 0, 7, 6, 5) ^ 0 );  
+        t5 = (ROUND_ELT(h, 5, 4, 3, 2, 1, 0, 7, 6) ^ 0 );  
+        t6 = (ROUND_ELT(h, 6, 5, 4, 3, 2, 1, 0, 7) ^ 0 );  
+        t7 = (ROUND_ELT(h, 7, 6, 5, 4, 3, 2, 1, 0) ^ 0 );  
+
+        h[0] = t0;
+        h[1] = t1;
+        h[2] = t2;
+        h[3] = t3;
+        h[4] = t4;
+        h[5] = t5;
+        h[6] = t6;
+        h[7] = t7;
+
+        t0 = ROUND_ELT(n, 0, 7, 6, 5, 4, 3, 2, 1) ^ h[0]; 
+        t1 = ROUND_ELT(n, 1, 0, 7, 6, 5, 4, 3, 2) ^ h[1]; 
+        t2 = ROUND_ELT(n, 2, 1, 0, 7, 6, 5, 4, 3) ^ h[2]; 
+        t3 = ROUND_ELT(n, 3, 2, 1, 0, 7, 6, 5, 4) ^ h[3]; 
+        t4 = ROUND_ELT(n, 4, 3, 2, 1, 0, 7, 6, 5) ^ h[4]; 
+        t5 = ROUND_ELT(n, 5, 4, 3, 2, 1, 0, 7, 6) ^ h[5]; 
+        t6 = ROUND_ELT(n, 6, 5, 4, 3, 2, 1, 0, 7) ^ h[6]; 
+        t7 = ROUND_ELT(n, 7, 6, 5, 4, 3, 2, 1, 0) ^ h[7]; 
+
+        n[0] = t0;
+        n[1] = t1;
+        n[2] = t2;
+        n[3] = t3;
+        n[4] = t4;
+        n[5] = t5;
+        n[6] = t6;
+        n[7] = t7;    
     }
 }
 
 __attribute__((reqd_work_group_size(WORKSIZE, 1, 1)))
-__kernel void whirlpool(__global unsigned char* block, __global hash_t* hashes)
+__kernel void search(__global unsigned char* block, __global hash_t* hashes)
 {
    uint gid = get_global_id(0);
     __global hash_t *hash = &(hashes[gid-get_global_offset(0)]);
@@ -1264,14 +1272,12 @@ __kernel void whirlpool(__global unsigned char* block, __global hash_t* hashes)
 }
 
 __attribute__((reqd_work_group_size(WORKSIZE, 1, 1)))
-__kernel void whirlpool2(__global hash_t* hashes, __global uint* output, const ulong target)
+__kernel void search1(__global hash_t* hashes)
 {
+   uint gid = get_global_id(0);
+    __global hash_t *hash = &(hashes[gid-get_global_offset(0)]);
 
-uint gid = get_global_id(0);
-    uint offset = get_global_offset(0);
-    __global hash_t *hash = &(hashes[gid-offset]);
-
-        sph_u64 n[8]; 
+    sph_u64 n[8]; 
     sph_u64 h[8];
     sph_u64 state[8];
 
@@ -1328,12 +1334,25 @@ uint gid = get_global_id(0);
         hash->h8[7] = state[7] ^ n[7] ^ 0x2000000000000;
     }
 
-bool result = (hash->h8[3] <= target);
-    if (result)
-    output[atomic_inc(output+0xFF)] = SWAP4(gid);
+    barrier(CLK_GLOBAL_MEM_FENCE);
+}
+
+__attribute__((reqd_work_group_size(WORKSIZE, 1, 1)))
+__kernel void search2(__global hash_t* hashes)
+{
+
 
 }
 
+__attribute__((reqd_work_group_size(WORKSIZE, 1, 1)))
+__kernel void search3(__global hash_t* hashes, __global uint* output, const ulong target)
+{
+    uint gid = get_global_id(0);
+    __global hash_t *hash = &(hashes[gid-get_global_offset(0)]);
 
+    bool result = (hash->h8[3] <= target);
+    if (result)
+        output[atomic_inc(output+0xFF)] = SWAP4(gid);
+}
 
 #endif // W_CL
