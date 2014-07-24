@@ -1,0 +1,4 @@
+#!/bin/sh
+rm ./*.bin
+./sgminer -c ./mining.conf
+
