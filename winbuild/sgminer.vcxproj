@@ -265,6 +265,7 @@
     <ClCompile Include="..\algorithm\talkcoin.c" />
     <ClCompile Include="..\algorithm\x14.c" />
     <ClCompile Include="..\algorithm\whirlcoin.c" />
+    <ClCompile Include="..\algorithm\fresh.c" />
     <ClCompile Include="..\api.c" />
     <ClCompile Include="..\ccan\opt\helpers.c" />
     <ClCompile Include="..\ccan\opt\opt.c" />
@@ -272,6 +273,7 @@
     <ClCompile Include="..\ccan\opt\usage.c" />
     <ClCompile Include="..\algorithm\darkcoin.c" />
     <ClCompile Include="..\config_parser.c" />
+    <ClCompile Include="..\events.c" />
     <ClCompile Include="..\driver-opencl.c" />
     <ClCompile Include="..\findnonce.c" />
     <ClCompile Include="..\algorithm\fuguecoin.c" />
@@ -323,6 +325,7 @@
     <ClInclude Include="..\algorithm\talkcoin.h" />
     <ClInclude Include="..\algorithm\x14.h" />
     <ClInclude Include="..\algorithm\whirlcoin.h" />
+    <ClInclude Include="..\algorithm\fresh.h" />
     <ClInclude Include="..\api.h" />
     <ClInclude Include="..\arg-nonnull.h" />
     <ClInclude Include="..\bench_block.h" />
@@ -330,6 +333,7 @@
     <ClInclude Include="..\compat.h" />
     <ClInclude Include="..\algorithm\darkcoin.h" />
     <ClInclude Include="..\config_parser.h" />
+    <ClInclude Include="..\events.h" />
     <ClInclude Include="..\driver-opencl.h" />
     <ClInclude Include="..\elist.h" />
     <ClInclude Include="..\findnonce.h" />

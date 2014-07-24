@@ -29,6 +29,7 @@
 #include "algorithm/bitblock.h"
 #include "algorithm/x14.h"
 #include "algorithm/whirlcoin.h"
+#include "algorithm/fresh.h"
 
 #include "compat.h"
 
@@ -48,7 +49,8 @@ const char *algorithm_type_str[] = {
   "Twecoin",
   "Fugue256",
   "NIST",
-  "Whirlcoin"
+  "Whirlcoin",
+  "Fresh"
 };
 
 void sha256(const unsigned char *message, unsigned int len, unsigned char *digest)
@@ -545,6 +547,38 @@ static cl_int queue_x14_old_kernel(struct __clState *clState, struct _dev_blk_ct
   return status;
 }
 
+static cl_int queue_fresh_kernel(struct __clState *clState, struct _dev_blk_ctx *blk, __maybe_unused cl_uint threads)
+{
+  cl_kernel *kernel;
+  unsigned int num;
+  cl_ulong le_target;
+  cl_int status = 0;
+
+  le_target = *(cl_ulong *)(blk->work->device_target + 24);
+  flip80(clState->cldata, blk->work->data);
+  status = clEnqueueWriteBuffer(clState->commandQueue, clState->CLbuffer0, true, 0, 80, clState->cldata, 0, NULL,NULL);
+
+  // shavite 1 - search
+  kernel = &clState->kernel;
+  num = 0;
+  CL_SET_ARG(clState->CLbuffer0);
+  CL_SET_ARG(clState->padbuffer8);
+  // smid 1 - search1
+  kernel = clState->extra_kernels;
+  CL_SET_ARG_0(clState->padbuffer8);
+  // shavite 2 - search2
+  CL_NEXTKERNEL_SET_ARG_0(clState->padbuffer8);
+  // smid 2 - search3
+  CL_NEXTKERNEL_SET_ARG_0(clState->padbuffer8);
+  // echo - search4
+  num = 0;
+  CL_NEXTKERNEL_SET_ARG(clState->padbuffer8);
+  CL_SET_ARG(clState->outputBuffer);
+  CL_SET_ARG(le_target);
+
+  return status;
+}
+
 typedef struct _algorithm_settings_t {
   const char *name; /* Human-readable identifier */
   algorithm_type_t type; //common algorithm type
@@ -609,6 +643,9 @@ static algorithm_settings_t algos[] = {
   { "bitblockold", ALGO_X15, 1, 1, 1, 0, 0, 0xFF, 0xFFFFULL, 0x0000ffffUL, 10, 4 * 16 * 4194304, 0, bitblock_regenhash, queue_bitblockold_kernel, gen_hash, append_hamsi_compiler_options},
 
   { "talkcoin-mod", ALGO_NIST, 1, 1, 1, 0, 0, 0xFF, 0xFFFFULL, 0x0000ffffUL, 4,  8 * 16 * 4194304, 0, talkcoin_regenhash, queue_talkcoin_mod_kernel, gen_hash, NULL},
+
+  { "fresh", ALGO_FRESH, 1, 256, 256, 0, 0, 0xFF, 0xFFFFULL, 0x0000ffffUL, 4, 4 * 16 * 4194304, 0, fresh_regenhash, queue_fresh_kernel, gen_hash, NULL},
+
   // kernels starting from this will have difficulty calculated by using fuguecoin algorithm
 #define A_FUGUE(a, b) \
     { a, ALGO_FUGUE, 1, 256, 256, 0, 0, 0xFF, 0xFFFFULL, 0x0000ffffUL, 0, 0, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, b, queue_sph_kernel, sha256, NULL}
@@ -625,13 +662,13 @@ void copy_algorithm_settings(algorithm_t* dest, const char* algo)
   algorithm_settings_t* src;
 
   // Find algorithm settings and copy
-  for (src = algos; src->name; src++) 
+  for (src = algos; src->name; src++)
   {
-    if (strcmp(src->name, algo) == 0) 
+    if (strcmp(src->name, algo) == 0)
     {
       strcpy(dest->name, src->name);
       dest->type = src->type;
-      
+
       dest->diff_multiplier1 = src->diff_multiplier1;
       dest->diff_multiplier2 = src->diff_multiplier2;
       dest->share_diff_multiplier = src->share_diff_multiplier;
@@ -652,7 +689,7 @@ void copy_algorithm_settings(algorithm_t* dest, const char* algo)
   }
 
   // if not found
-  if (src->name == NULL) 
+  if (src->name == NULL)
   {
     applog(LOG_WARNING, "Algorithm %s not found, using %s.", algo, algos->name);
     copy_algorithm_settings(dest, algos->name);
@@ -697,6 +734,7 @@ void set_algorithm(algorithm_t* algo, const char* newname_alias)
 {
   const char* newname;
   //load previous algorithm nfactor in case nfactor was applied before algorithm... or default to 10
+
   uint8_t old_nfactor = ((algo->nfactor)?algo->nfactor:0); 
   uint8_t nfactor = 10; 
 
@@ -709,14 +747,16 @@ void set_algorithm(algorithm_t* algo, const char* newname_alias)
   if ((old_nfactor > 0) && (old_nfactor != nfactor))
     nfactor = old_nfactor;
 
-  set_algorithm_nfactor(algo, nfactor);
+  // Doesn't matter for non-scrypt algorithms
+  if (nfactor > 0)
+    set_algorithm_nfactor(algo, nfactor);
 }
 
 void set_algorithm_nfactor(algorithm_t* algo, const uint8_t nfactor)
 {
   algo->nfactor = nfactor;
   algo->n = (1 << nfactor);
-  
+
   //adjust algo type accordingly
   switch (algo->type)
   {

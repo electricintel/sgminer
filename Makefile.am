@@ -43,6 +43,7 @@ sgminer_SOURCES += adl.c adl.h adl_functions.h
 sgminer_SOURCES += pool.c pool.h
 sgminer_SOURCES += algorithm.c algorithm.h
 sgminer_SOURCES += config_parser.c config_parser.h
+sgminer_SOURCES += events.c events.h
 sgminer_SOURCES += ocl/patch_kernel.c ocl/patch_kernel.h
 sgminer_SOURCES += ocl/build_kernel.c ocl/build_kernel.h
 sgminer_SOURCES += ocl/binary_kernel.c ocl/binary_kernel.h
@@ -65,6 +66,7 @@ sgminer_SOURCES += algorithm/talkcoin.c algorithm/talkcoin.h
 sgminer_SOURCES += algorithm/bitblock.c algorithm/bitblock.h
 sgminer_SOURCES += algorithm/x14.c algorithm/x14.h
 sgminer_SOURCES += algorithm/whirlcoin.c algorithm/whirlcoin.h
+sgminer_SOURCES += algorithm/fresh.c algorithm/fresh.h
 
 bin_SCRIPTS	= $(top_srcdir)/kernel/*.cl
 
