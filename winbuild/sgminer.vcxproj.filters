@@ -179,6 +179,9 @@
     <ClCompile Include="..\config_parser.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\events.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\algorithm\talkcoin.c">
       <Filter>Source Files\algorithm</Filter>
     </ClCompile>
@@ -196,6 +199,9 @@
     </ClCompile>
     <ClCompile Include="..\sph\shabal.c">
       <Filter>Source Files\sph</Filter>
+    </ClCompile>
+    <ClCompile Include="..\algorithm\fresh.c">
+      <Filter>Source Files\algorithm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -355,6 +361,9 @@
     <ClInclude Include="..\config_parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\events.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\algorithm\talkcoin.h">
       <Filter>Header Files\algorithm</Filter>
     </ClInclude>
@@ -372,6 +381,9 @@
     </ClInclude>
     <ClInclude Include="..\sph\sph_shabal.h">
       <Filter>Header Files\sph</Filter>
+    </ClInclude>
+    <ClInclude Include="..\algorithm\fresh.h">
+      <Filter>Header Files\algorithm</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
